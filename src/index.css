@@ -34,3 +34,187 @@
 .delay-1000 {
   animation-delay: 1s;
 }
+
+/* Scanline effect overlay */
+.scanline-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanline-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0, 255, 194, 0.02) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1;
+  animation: scanline 8s linear infinite;
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* Glitch text effect */
+@keyframes glitch {
+  0%, 100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+}
+
+.glitch-text {
+  position: relative;
+  animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+  animation-iteration-count: 3;
+  animation-delay: 2s;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -2px 0 #FF2A00;
+  clip: rect(24px, 550px, 90px, 0);
+  animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+  left: -2px;
+  text-shadow: -2px 0 #00FFC2;
+  clip: rect(85px, 550px, 140px, 0);
+  animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% {
+    clip: rect(61px, 9999px, 85px, 0);
+  }
+  20% {
+    clip: rect(29px, 9999px, 123px, 0);
+  }
+  40% {
+    clip: rect(44px, 9999px, 27px, 0);
+  }
+  60% {
+    clip: rect(13px, 9999px, 89px, 0);
+  }
+  80% {
+    clip: rect(76px, 9999px, 35px, 0);
+  }
+  100% {
+    clip: rect(31px, 9999px, 68px, 0);
+  }
+}
+
+@keyframes glitch-anim-2 {
+  0% {
+    clip: rect(65px, 9999px, 100px, 0);
+  }
+  20% {
+    clip: rect(110px, 9999px, 45px, 0);
+  }
+  40% {
+    clip: rect(33px, 9999px, 78px, 0);
+  }
+  60% {
+    clip: rect(90px, 9999px, 15px, 0);
+  }
+  80% {
+    clip: rect(5px, 9999px, 125px, 0);
+  }
+  100% {
+    clip: rect(70px, 9999px, 55px, 0);
+  }
+}
+
+/* HUD border effect */
+.hud-border {
+  position: relative;
+  border: 2px solid #00FFC2;
+}
+
+.hud-border::before,
+.hud-border::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #00FFC2;
+}
+
+.hud-border::before {
+  top: -2px;
+  left: -2px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.hud-border::after {
+  bottom: -2px;
+  right: -2px;
+  border-left: none;
+  border-top: none;
+}
+
+/* Loading pulse animation */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 255, 194, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(0, 255, 194, 0.8);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Neon text glow */
+.neon-text {
+  text-shadow: 
+    0 0 10px rgba(0, 255, 194, 0.7),
+    0 0 20px rgba(0, 255, 194, 0.5),
+    0 0 30px rgba(0, 255, 194, 0.3);
+}
+
+/* Alert text glow */
+.alert-text {
+  text-shadow: 
+    0 0 10px rgba(255, 42, 0, 0.7),
+    0 0 20px rgba(255, 42, 0, 0.5),
+    0 0 30px rgba(255, 42, 0, 0.3);
+}
