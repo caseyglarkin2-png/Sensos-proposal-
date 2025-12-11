@@ -267,8 +267,8 @@ const StrategySection = ({ colors }) => {
 
 const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
   const [simulationState, setSimulationState] = useState('idle');
-  const [logs, setLogs] = useState<string[]>([]);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const [logs, setLogs] = useState([]);
+  const scrollRef = useRef(null);
 
   const scenarios = {
     AOG: {
@@ -303,7 +303,7 @@ const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
     setSimulationState('initializing');
     setLogs([]);
     
-    const addLog = (text: string) => {
+    const addLog = (text) => {
       setLogs(prev => [...prev, `> ${text}`]);
       if (scrollRef.current) {
         scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -351,7 +351,7 @@ const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
     setSimulationState('resolved');
   };
 
-  const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   return (
     <div className="bg-white/5 py-24">

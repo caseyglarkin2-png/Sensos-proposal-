@@ -72,7 +72,7 @@ Vercel is perfect for React applications and offers zero-configuration deploymen
 2. **Add to package.json:**
    ```json
    {
-     "homepage": "https://yourusername.github.io/Sensos-proposal-",
+     "homepage": "https://yourusername.github.io/sensos-proposal",
      "scripts": {
        "predeploy": "npm run build",
        "deploy": "gh-pages -d dist"
