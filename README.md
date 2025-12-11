@@ -25,6 +25,18 @@ npm run build
 npm run preview
 ```
 
+### Environment Variables
+
+The application uses Google Generative AI for the LIA simulation. To enable this feature:
+
+1. Create a `.env` file in the root directory
+2. Add your Google AI API key:
+   ```
+   VITE_GOOGLE_AI_API_KEY=your_api_key_here
+   ```
+
+**Note:** The API key is optional. If not provided, the LIA simulation will still display but without AI-powered responses.
+
 ## Deployment
 
 This project is configured to automatically deploy to GitHub Pages (which can be mapped to dwtb.dev) when changes are pushed to the `main` branch.
