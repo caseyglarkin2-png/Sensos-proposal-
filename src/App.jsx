@@ -222,7 +222,7 @@ const StrategySection = ({ colors }) => {
           </div>
         </div>
         <div className="relative h-80 bg-gray-900 rounded-lg overflow-hidden border border-white/10 flex items-center justify-center">
-            {/* Visual metaphore for chaos */}
+            {/* Visual metaphor for chaos */}
             <div className="absolute inset-0 flex flex-wrap opacity-20">
                 {Array.from({ length: 50 }).map((_, i) => (
                     <div key={i} className="w-4 h-4 m-2 bg-red-500 rounded-full animate-ping" style={{ animationDelay: `${Math.random() * 2}s` }}></div>
@@ -234,7 +234,7 @@ const StrategySection = ({ colors }) => {
 
       <div className="grid md:grid-cols-2 gap-16 items-center">
         <div className="order-2 md:order-1 relative h-80 bg-black rounded-lg overflow-hidden border border-[#00FFC2] flex items-center justify-center shadow-[0_0_50px_rgba(0,255,194,0.1)]">
-             {/* Visual metaphore for order */}
+             {/* Visual metaphor for order */}
              <div className="absolute inset-0 flex items-center justify-center">
                  <div className="w-40 h-40 border-2 border-[#00FFC2] rounded-full animate-spin-slow flex items-center justify-center">
                     <div className="w-20 h-20 bg-[#00FFC2] rounded-full animate-pulse shadow-[0_0_30px_#00FFC2]"></div>
