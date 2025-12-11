@@ -148,7 +148,8 @@ const SensosProposal = () => {
 };
 
 // --- API UTILS ---
-const apiKey = ""; // Injected by runtime
+// Note: For production use, set VITE_GOOGLE_AI_API_KEY environment variable
+const apiKey = import.meta.env.VITE_GOOGLE_AI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-09-2025" });
 
@@ -222,7 +223,7 @@ const StrategySection = ({ colors }) => {
           </div>
         </div>
         <div className="relative h-80 bg-gray-900 rounded-lg overflow-hidden border border-white/10 flex items-center justify-center">
-            {/* Visual metaphore for chaos */}
+            {/* Visual metaphor for chaos */}
             <div className="absolute inset-0 flex flex-wrap opacity-20">
                 {Array.from({ length: 50 }).map((_, i) => (
                     <div key={i} className="w-4 h-4 m-2 bg-red-500 rounded-full animate-ping" style={{ animationDelay: `${Math.random() * 2}s` }}></div>
@@ -234,7 +235,7 @@ const StrategySection = ({ colors }) => {
 
       <div className="grid md:grid-cols-2 gap-16 items-center">
         <div className="order-2 md:order-1 relative h-80 bg-black rounded-lg overflow-hidden border border-[#00FFC2] flex items-center justify-center shadow-[0_0_50px_rgba(0,255,194,0.1)]">
-             {/* Visual metaphore for order */}
+             {/* Visual metaphor for order */}
              <div className="absolute inset-0 flex items-center justify-center">
                  <div className="w-40 h-40 border-2 border-[#00FFC2] rounded-full animate-spin-slow flex items-center justify-center">
                     <div className="w-20 h-20 bg-[#00FFC2] rounded-full animate-pulse shadow-[0_0_30px_#00FFC2]"></div>
@@ -266,8 +267,8 @@ const StrategySection = ({ colors }) => {
 
 const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
   const [simulationState, setSimulationState] = useState('idle');
-  const [logs, setLogs] = useState<string[]>([]);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const [logs, setLogs] = useState([]);
+  const scrollRef = useRef(null);
 
   const scenarios = {
     AOG: {
@@ -302,7 +303,7 @@ const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
     setSimulationState('initializing');
     setLogs([]);
     
-    const addLog = (text: string) => {
+    const addLog = (text) => {
       setLogs(prev => [...prev, `> ${text}`]);
       if (scrollRef.current) {
         scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -350,7 +351,7 @@ const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
     setSimulationState('resolved');
   };
 
-  const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   return (
     <div className="bg-white/5 py-24">
