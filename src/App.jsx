@@ -79,7 +79,7 @@ const SensosProposal = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <button 
-              className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity" 
+              className="flex items-center space-x-3 hover:opacity-80 transition-opacity" 
               onClick={() => setActiveSection('home')}
               aria-label="Return to home"
             >
@@ -157,7 +157,7 @@ const SensosProposal = () => {
       {/* Footer */}
       <footer className="border-t border-white/10 mt-20 py-12 bg-black" role="contentinfo">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-[#00FFC2] font-mono mb-4">&quot;You Merely Adopted the Supply Chain. We Were Born In It.&quot;</p>
+          <p className="text-[#00FFC2] font-mono mb-4">"You Merely Adopted the Supply Chain. We Were Born In It."</p>
           <div className="flex justify-center items-center space-x-2 text-gray-500 text-sm">
             <span>Casey Larkin</span>
             <span aria-hidden="true">•</span>
@@ -200,7 +200,7 @@ const HeroSection = ({ setActiveSection }) => {
         </h1>
         
         <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-12 font-light">
-          We aren&apos;t building you a &quot;control tower&quot; to watch disasters happen. 
+          We aren't building you a "control tower" to watch disasters happen. 
           We are building <span className="text-white font-semibold">The Singularity</span>. 
           The point where visibility collapses into action.
         </p>
@@ -1059,7 +1059,7 @@ const VoiceEngineSection = () => {
               <h4 className="font-bold text-white mb-2">Production Implementation Note</h4>
               <p className="text-gray-400 text-sm">
                 This demo showcases text enhancement using Gemini. For full TTS functionality, integrate Google Cloud Text-to-Speech API
-                or Gemini&apos;s multimodal capabilities with audio output. The visualizer demonstrates real-time audio analysis using Web Audio API.
+                or Gemini's multimodal capabilities with audio output. The visualizer demonstrates real-time audio analysis using Web Audio API.
               </p>
             </div>
           </div>
