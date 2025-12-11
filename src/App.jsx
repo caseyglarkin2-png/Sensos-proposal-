@@ -1,15 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { 
   Terminal, 
   Activity, 
   Brain, 
-  Truck, 
   ShieldAlert, 
   Zap, 
-  MapPin, 
   Users, 
   Wine, 
-  DollarSign, 
   CheckCircle, 
   ArrowRight, 
   Menu, 
@@ -18,7 +15,6 @@ import {
   Anchor,
   Cpu,
   Wifi,
-  Lock,
   Sparkles,
   RefreshCw,
   AlertTriangle
@@ -154,7 +150,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-09-202
 
 // --- SECTIONS ---
 
-const HeroSection = ({ setActiveSection, colors }) => {
+const HeroSection = ({ setActiveSection }) => {
   return (
     <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
       {/* Abstract Background Particles (Simulated with CSS) */}
@@ -200,7 +196,7 @@ const HeroSection = ({ setActiveSection, colors }) => {
   );
 };
 
-const StrategySection = ({ colors }) => {
+const StrategySection = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-20">
       <div className="grid md:grid-cols-2 gap-16 items-center mb-24">
@@ -264,12 +260,12 @@ const StrategySection = ({ colors }) => {
   );
 };
 
-const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
+const LIASection = ({ activeVertical, setActiveVertical }) => {
   const [simulationState, setSimulationState] = useState('idle');
   const [logs, setLogs] = useState([]);
   const scrollRef = useRef(null);
 
-  const scenarios = {
+  const scenarios = useMemo(() => ({
     AOG: {
       title: "Aviation (AOG)",
       trigger: "Part #X99 stuck in Customs (Dubai)",
@@ -291,14 +287,11 @@ const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
       icon: <Box className="text-yellow-400" size={32} />,
       backupLogs: ["Scanning Labor Union Newsfeeds...", "Keyword Match: 'STRIKE AUTHORIZATION'", "Risk Probability: 85%", "Affected Containers: 40 Units"]
     }
-  };
+  }), []);
 
-  useEffect(() => {
-    // Reset simulation on vertical change
-    runSimulation();
-  }, [activeVertical]);
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-  const runSimulation = async () => {
+  const runSimulation = useCallback(async () => {
     setSimulationState('initializing');
     setLogs([]);
     
@@ -348,9 +341,12 @@ const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
     addLog("CALCULATING RESOLUTION...");
     await wait(1000);
     setSimulationState('resolved');
-  };
+  }, [activeVertical, scenarios]);
 
-  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  useEffect(() => {
+    // Reset simulation on vertical change
+    runSimulation();
+  }, [runSimulation]);
 
   return (
     <div className="bg-white/5 py-24">
@@ -480,7 +476,7 @@ const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
   );
 };
 
-const ManifestSection = ({ colors }) => {
+const ManifestSection = () => {
   const [crisis, setCrisis] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -612,7 +608,7 @@ const ManifestSection = ({ colors }) => {
   );
 };
 
-const BidSection = ({ colors }) => {
+const BidSection = () => {
   return (
     <div className="bg-[#0A0A0A] py-24 border-t border-gray-800">
       <div className="max-w-4xl mx-auto px-4">
