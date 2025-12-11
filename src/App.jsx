@@ -75,29 +75,40 @@ const SensosProposal = () => {
   return (
     <div className="min-h-screen font-sans selection:bg-[#00FFC2] selection:text-black scanline-overlay" style={{ backgroundColor: colors.void, color: colors.text }}>
       {/* Navigation */}
-      <nav className="fixed w-full z-50 border-b border-white/10 backdrop-blur-md bg-black/80">
+      <nav className="fixed w-full z-50 border-b border-white/10 backdrop-blur-md bg-black/80" role="navigation" aria-label="Main navigation">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveSection('home')}>
-              <div className="w-10 h-10 border border-[#00FFC2] flex items-center justify-center bg-[#00FFC2]/10">
+            <button 
+              className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity" 
+              onClick={() => setActiveSection('home')}
+              aria-label="Return to home"
+            >
+              <div className="w-10 h-10 border border-[#00FFC2] flex items-center justify-center bg-[#00FFC2]/10" aria-hidden="true">
                 <Terminal size={24} color={colors.neon} />
               </div>
               <span className="font-bold text-xl tracking-tighter">SENSOS <span className="text-[#00FFC2]">x</span> DWTB?!</span>
-            </div>
+            </button>
             
             <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-8">
+              <div className="ml-10 flex items-baseline space-x-8" role="menubar">
                 {navItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setActiveSection(item.id)}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:text-[#00FFC2] hover:bg-white/5 ${activeSection === item.id ? 'text-[#00FFC2] border-b-2 border-[#00FFC2]' : 'text-gray-300'}`}
+                    aria-label={`Navigate to ${item.label}`}
+                    aria-current={activeSection === item.id ? 'page' : undefined}
+                    role="menuitem"
                   >
                     {item.label}
                   </button>
                 ))}
-                <button className="bg-[#00FFC2] text-black px-4 py-2 rounded-sm font-bold text-sm hover:bg-[#00CC9A] transition-colors flex items-center">
-                  <Sparkles size={16} className="mr-2" /> ACCEPT BID
+                <button 
+                  className="bg-[#00FFC2] text-black px-4 py-2 rounded-sm font-bold text-sm hover:bg-[#00CC9A] transition-colors flex items-center"
+                  aria-label="Accept bid and start partnership"
+                  onClick={() => setActiveSection('bid')}
+                >
+                  <Sparkles size={16} className="mr-2" aria-hidden="true" /> ACCEPT BID
                 </button>
               </div>
             </div>
@@ -105,9 +116,11 @@ const SensosProposal = () => {
             <div className="-mr-2 flex md:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none"
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#00FFC2]"
+                aria-expanded={isMenuOpen}
+                aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
               >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                {isMenuOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
               </button>
             </div>
           </div>
@@ -115,7 +128,7 @@ const SensosProposal = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-black border-b border-white/10">
+          <div className="md:hidden bg-black border-b border-white/10" role="menu">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {navItems.map((item) => (
                 <button
@@ -125,6 +138,8 @@ const SensosProposal = () => {
                     setIsMenuOpen(false);
                   }}
                   className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
+                  role="menuitem"
+                  aria-label={`Navigate to ${item.label}`}
                 >
                   {item.label}
                 </button>
@@ -135,19 +150,19 @@ const SensosProposal = () => {
       </nav>
 
       {/* Main Content */}
-      <main className="pt-20">
+      <main className="pt-20" role="main" aria-label="Main content">
         {renderSection()}
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 mt-20 py-12 bg-black">
+      <footer className="border-t border-white/10 mt-20 py-12 bg-black" role="contentinfo">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-[#00FFC2] font-mono mb-4">"You Merely Adopted the Supply Chain. We Were Born In It."</p>
+          <p className="text-[#00FFC2] font-mono mb-4">&quot;You Merely Adopted the Supply Chain. We Were Born In It.&quot;</p>
           <div className="flex justify-center items-center space-x-2 text-gray-500 text-sm">
             <span>Casey Larkin</span>
-            <span>•</span>
+            <span aria-hidden="true">•</span>
             <span>The Freight Marketer</span>
-            <span>•</span>
+            <span aria-hidden="true">•</span>
             <span>One Neck to Choke</span>
           </div>
         </div>
@@ -165,9 +180,9 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-09-202
 
 const HeroSection = ({ setActiveSection }) => {
   return (
-    <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden" aria-label="Hero section">
       {/* Abstract Background Particles (Simulated with CSS) */}
-      <div className="absolute inset-0 z-0 opacity-20">
+      <div className="absolute inset-0 z-0 opacity-20" aria-hidden="true">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#00FFC2] rounded-full filter blur-[120px] animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-[#FF2A00] rounded-full filter blur-[100px] animate-pulse delay-1000"></div>
       </div>
@@ -175,7 +190,7 @@ const HeroSection = ({ setActiveSection }) => {
       <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
         <div className="inline-block mb-6 px-4 py-1 border border-[#00FFC2]/50 rounded-full bg-[#00FFC2]/10 backdrop-blur-sm">
           <span className="text-[#00FFC2] font-mono text-sm tracking-widest flex items-center gap-2">
-             <Sparkles size={14} /> PROPOSAL ID: SINGULARITY_2026
+             <Sparkles size={14} aria-hidden="true" /> PROPOSAL ID: SINGULARITY_2026
           </span>
         </div>
         
@@ -185,7 +200,7 @@ const HeroSection = ({ setActiveSection }) => {
         </h1>
         
         <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-12 font-light">
-          We aren't building you a "control tower" to watch disasters happen. 
+          We aren&apos;t building you a &quot;control tower&quot; to watch disasters happen. 
           We are building <span className="text-white font-semibold">The Singularity</span>. 
           The point where visibility collapses into action.
         </p>
@@ -194,28 +209,30 @@ const HeroSection = ({ setActiveSection }) => {
           <button 
             onClick={() => setActiveSection('bid')}
             className="w-full md:w-auto px-8 py-4 bg-[#00FFC2] hover:bg-[#00CC9A] text-black font-bold text-lg rounded-sm transition-all transform hover:scale-105 flex items-center justify-center"
+            aria-label="View the bid details"
           >
-            SEE THE BID <ArrowRight className="ml-2" size={20} />
+            SEE THE BID <ArrowRight className="ml-2" size={20} aria-hidden="true" />
           </button>
           <button 
             onClick={() => setActiveSection('lia')}
             className="w-full md:w-auto px-8 py-4 border border-white/20 hover:bg-white/10 text-white font-medium text-lg rounded-sm transition-all flex items-center justify-center"
+            aria-label="Test the AI demonstrations"
           >
-             <Sparkles size={18} className="mr-2 text-[#00FFC2]" /> TEST THE AI
+             <Sparkles size={18} className="mr-2 text-[#00FFC2]" aria-hidden="true" /> TEST THE AI
           </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
 const StrategySection = () => {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-20">
+    <section className="max-w-7xl mx-auto px-4 py-20" aria-labelledby="strategy-heading">
       <div className="grid md:grid-cols-2 gap-16 items-center mb-24">
         <div>
-          <h2 className="text-4xl font-bold mb-6 flex items-center">
-            <span className="text-[#FF2A00] mr-4 text-5xl">01.</span>
+          <h2 id="strategy-heading" className="text-4xl font-bold mb-6 flex items-center">
+            <span className="text-[#FF2A00] mr-4 text-5xl" aria-hidden="true">01.</span>
             THE PROBLEM
           </h2>
           <p className="text-xl text-gray-400 mb-6 leading-relaxed">
@@ -269,7 +286,7 @@ const StrategySection = () => {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
