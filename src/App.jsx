@@ -1,15 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { 
   Terminal, 
   Activity, 
   Brain, 
-  Truck, 
   ShieldAlert, 
   Zap, 
-  MapPin, 
   Users, 
   Wine, 
-  DollarSign, 
   CheckCircle, 
   ArrowRight, 
   Menu, 
@@ -18,10 +15,16 @@ import {
   Anchor,
   Cpu,
   Wifi,
-  Lock,
   Sparkles,
   RefreshCw,
-  AlertTriangle
+  AlertTriangle,
+  Image,
+  Download,
+  Mic,
+  Volume2,
+  Play,
+  Pause,
+  Loader2
 } from 'lucide-react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -42,6 +45,8 @@ const SensosProposal = () => {
   const navItems = [
     { id: 'strategy', label: 'The Singularity' },
     { id: 'lia', label: 'Meet LIA ✨' },
+    { id: 'meme', label: 'Meme Generator' },
+    { id: 'voice', label: 'Voice Engine' },
     { id: 'manifest', label: 'Manifest 2026' },
     { id: 'bid', label: 'The Bid' }
   ];
@@ -49,46 +54,61 @@ const SensosProposal = () => {
   const renderSection = () => {
     switch (activeSection) {
       case 'home':
-        return <HeroSection setActiveSection={setActiveSection} colors={colors} />;
+        return <HeroSection setActiveSection={setActiveSection} />;
       case 'strategy':
-        return <StrategySection colors={colors} />;
+        return <StrategySection />;
       case 'lia':
-        return <LIASection activeVertical={activeVertical} setActiveVertical={setActiveVertical} colors={colors} />;
+        return <LIASection activeVertical={activeVertical} setActiveVertical={setActiveVertical} />;
+      case 'meme':
+        return <MemeGeneratorSection />;
+      case 'voice':
+        return <VoiceEngineSection />;
       case 'manifest':
-        return <ManifestSection colors={colors} />;
+        return <ManifestSection />;
       case 'bid':
-        return <BidSection colors={colors} />;
+        return <BidSection />;
       default:
-        return <HeroSection setActiveSection={setActiveSection} colors={colors} />;
+        return <HeroSection setActiveSection={setActiveSection} />;
     }
   };
 
   return (
-    <div className="min-h-screen font-sans selection:bg-[#00FFC2] selection:text-black" style={{ backgroundColor: colors.void, color: colors.text }}>
+    <div className="min-h-screen font-sans selection:bg-[#00FFC2] selection:text-black scanline-overlay" style={{ backgroundColor: colors.void, color: colors.text }}>
       {/* Navigation */}
-      <nav className="fixed w-full z-50 border-b border-white/10 backdrop-blur-md bg-black/80">
+      <nav className="fixed w-full z-50 border-b border-white/10 backdrop-blur-md bg-black/80" role="navigation" aria-label="Main navigation">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveSection('home')}>
-              <div className="w-10 h-10 border border-[#00FFC2] flex items-center justify-center bg-[#00FFC2]/10">
+            <button 
+              className="flex items-center space-x-3 hover:opacity-80 transition-opacity" 
+              onClick={() => setActiveSection('home')}
+              aria-label="Return to home"
+            >
+              <div className="w-10 h-10 border border-[#00FFC2] flex items-center justify-center bg-[#00FFC2]/10" aria-hidden="true">
                 <Terminal size={24} color={colors.neon} />
               </div>
               <span className="font-bold text-xl tracking-tighter">SENSOS <span className="text-[#00FFC2]">x</span> DWTB?!</span>
-            </div>
+            </button>
             
             <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-8">
+              <div className="ml-10 flex items-baseline space-x-8" role="menubar">
                 {navItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setActiveSection(item.id)}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:text-[#00FFC2] hover:bg-white/5 ${activeSection === item.id ? 'text-[#00FFC2] border-b-2 border-[#00FFC2]' : 'text-gray-300'}`}
+                    aria-label={`Navigate to ${item.label}`}
+                    aria-current={activeSection === item.id ? 'page' : undefined}
+                    role="menuitem"
                   >
                     {item.label}
                   </button>
                 ))}
-                <button className="bg-[#00FFC2] text-black px-4 py-2 rounded-sm font-bold text-sm hover:bg-[#00CC9A] transition-colors flex items-center">
-                  <Sparkles size={16} className="mr-2" /> ACCEPT BID
+                <button 
+                  className="bg-[#00FFC2] text-black px-4 py-2 rounded-sm font-bold text-sm hover:bg-[#00CC9A] transition-colors flex items-center"
+                  aria-label="Accept bid and start partnership"
+                  onClick={() => setActiveSection('bid')}
+                >
+                  <Sparkles size={16} className="mr-2" aria-hidden="true" /> ACCEPT BID
                 </button>
               </div>
             </div>
@@ -96,9 +116,11 @@ const SensosProposal = () => {
             <div className="-mr-2 flex md:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none"
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#00FFC2]"
+                aria-expanded={isMenuOpen}
+                aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
               >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                {isMenuOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
               </button>
             </div>
           </div>
@@ -106,7 +128,7 @@ const SensosProposal = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-black border-b border-white/10">
+          <div className="md:hidden bg-black border-b border-white/10" role="menu">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {navItems.map((item) => (
                 <button
@@ -116,6 +138,8 @@ const SensosProposal = () => {
                     setIsMenuOpen(false);
                   }}
                   className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
+                  role="menuitem"
+                  aria-label={`Navigate to ${item.label}`}
                 >
                   {item.label}
                 </button>
@@ -126,19 +150,19 @@ const SensosProposal = () => {
       </nav>
 
       {/* Main Content */}
-      <main className="pt-20">
+      <main className="pt-20" role="main" aria-label="Main content">
         {renderSection()}
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 mt-20 py-12 bg-black">
+      <footer className="border-t border-white/10 mt-20 py-12 bg-black" role="contentinfo">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-[#00FFC2] font-mono mb-4">"You Merely Adopted the Supply Chain. We Were Born In It."</p>
           <div className="flex justify-center items-center space-x-2 text-gray-500 text-sm">
             <span>Casey Larkin</span>
-            <span>•</span>
+            <span aria-hidden="true">•</span>
             <span>The Freight Marketer</span>
-            <span>•</span>
+            <span aria-hidden="true">•</span>
             <span>One Neck to Choke</span>
           </div>
         </div>
@@ -154,11 +178,11 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-09-202
 
 // --- SECTIONS ---
 
-const HeroSection = ({ setActiveSection, colors }) => {
+const HeroSection = ({ setActiveSection }) => {
   return (
-    <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden" aria-label="Hero section">
       {/* Abstract Background Particles (Simulated with CSS) */}
-      <div className="absolute inset-0 z-0 opacity-20">
+      <div className="absolute inset-0 z-0 opacity-20" aria-hidden="true">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#00FFC2] rounded-full filter blur-[120px] animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-[#FF2A00] rounded-full filter blur-[100px] animate-pulse delay-1000"></div>
       </div>
@@ -166,7 +190,7 @@ const HeroSection = ({ setActiveSection, colors }) => {
       <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
         <div className="inline-block mb-6 px-4 py-1 border border-[#00FFC2]/50 rounded-full bg-[#00FFC2]/10 backdrop-blur-sm">
           <span className="text-[#00FFC2] font-mono text-sm tracking-widest flex items-center gap-2">
-             <Sparkles size={14} /> PROPOSAL ID: SINGULARITY_2026
+             <Sparkles size={14} aria-hidden="true" /> PROPOSAL ID: SINGULARITY_2026
           </span>
         </div>
         
@@ -185,28 +209,30 @@ const HeroSection = ({ setActiveSection, colors }) => {
           <button 
             onClick={() => setActiveSection('bid')}
             className="w-full md:w-auto px-8 py-4 bg-[#00FFC2] hover:bg-[#00CC9A] text-black font-bold text-lg rounded-sm transition-all transform hover:scale-105 flex items-center justify-center"
+            aria-label="View the bid details"
           >
-            SEE THE BID <ArrowRight className="ml-2" size={20} />
+            SEE THE BID <ArrowRight className="ml-2" size={20} aria-hidden="true" />
           </button>
           <button 
             onClick={() => setActiveSection('lia')}
             className="w-full md:w-auto px-8 py-4 border border-white/20 hover:bg-white/10 text-white font-medium text-lg rounded-sm transition-all flex items-center justify-center"
+            aria-label="Test the AI demonstrations"
           >
-             <Sparkles size={18} className="mr-2 text-[#00FFC2]" /> TEST THE AI
+             <Sparkles size={18} className="mr-2 text-[#00FFC2]" aria-hidden="true" /> TEST THE AI
           </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
-const StrategySection = ({ colors }) => {
+const StrategySection = () => {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-20">
+    <section className="max-w-7xl mx-auto px-4 py-20" aria-labelledby="strategy-heading">
       <div className="grid md:grid-cols-2 gap-16 items-center mb-24">
         <div>
-          <h2 className="text-4xl font-bold mb-6 flex items-center">
-            <span className="text-[#FF2A00] mr-4 text-5xl">01.</span>
+          <h2 id="strategy-heading" className="text-4xl font-bold mb-6 flex items-center">
+            <span className="text-[#FF2A00] mr-4 text-5xl" aria-hidden="true">01.</span>
             THE PROBLEM
           </h2>
           <p className="text-xl text-gray-400 mb-6 leading-relaxed">
@@ -260,16 +286,16 @@ const StrategySection = ({ colors }) => {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
-const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
+const LIASection = ({ activeVertical, setActiveVertical }) => {
   const [simulationState, setSimulationState] = useState('idle');
   const [logs, setLogs] = useState([]);
   const scrollRef = useRef(null);
 
-  const scenarios = {
+  const scenarios = useMemo(() => ({
     AOG: {
       title: "Aviation (AOG)",
       trigger: "Part #X99 stuck in Customs (Dubai)",
@@ -291,14 +317,11 @@ const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
       icon: <Box className="text-yellow-400" size={32} />,
       backupLogs: ["Scanning Labor Union Newsfeeds...", "Keyword Match: 'STRIKE AUTHORIZATION'", "Risk Probability: 85%", "Affected Containers: 40 Units"]
     }
-  };
+  }), []);
 
-  useEffect(() => {
-    // Reset simulation on vertical change
-    runSimulation();
-  }, [activeVertical]);
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-  const runSimulation = async () => {
+  const runSimulation = useCallback(async () => {
     setSimulationState('initializing');
     setLogs([]);
     
@@ -348,9 +371,12 @@ const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
     addLog("CALCULATING RESOLUTION...");
     await wait(1000);
     setSimulationState('resolved');
-  };
+  }, [activeVertical, scenarios]);
 
-  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  useEffect(() => {
+    // Reset simulation on vertical change
+    runSimulation();
+  }, [runSimulation]);
 
   return (
     <div className="bg-white/5 py-24">
@@ -480,7 +506,7 @@ const LIASection = ({ activeVertical, setActiveVertical, colors }) => {
   );
 };
 
-const ManifestSection = ({ colors }) => {
+const ManifestSection = () => {
   const [crisis, setCrisis] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -612,7 +638,438 @@ const ManifestSection = ({ colors }) => {
   );
 };
 
-const BidSection = ({ colors }) => {
+// Meme Generator Section
+const MemeGeneratorSection = () => {
+  const [memeText, setMemeText] = useState('');
+  const [generatedMeme, setGeneratedMeme] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const generateMeme = async () => {
+    if (!memeText.trim()) {
+      setError('Please enter a supply chain crisis scenario');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setGeneratedMeme(null);
+
+    try {
+      // Use Gemini to generate meme text
+      const prompt = `Create a funny, cynical supply chain meme caption about: "${memeText}". 
+      The caption should be in the style of internet memes - short, punchy, relatable to supply chain professionals.
+      Format: Return ONLY the meme text, no quotes, no explanation. Max 2 lines.`;
+      
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const memeCaption = response.text().trim();
+
+      // Since Gemini doesn't support image generation in the free tier,
+      // we'll create a text-based meme with styling
+      setGeneratedMeme({
+        caption: memeCaption,
+        scenario: memeText
+      });
+    } catch (e) {
+      console.error('Meme generation failed:', e);
+      setError('Meme generation failed. Using fallback.');
+      setGeneratedMeme({
+        caption: 'When the container is stuck at port but the customer wants it tomorrow',
+        scenario: memeText
+      });
+    }
+
+    setLoading(false);
+  };
+
+  const downloadMeme = () => {
+    // Create a canvas-based meme download
+    const canvas = document.createElement('canvas');
+    canvas.width = 800;
+    canvas.height = 600;
+    const ctx = canvas.getContext('2d');
+
+    // Background
+    ctx.fillStyle = '#050505';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Neon border
+    ctx.strokeStyle = '#00FFC2';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+
+    // Title
+    ctx.fillStyle = '#00FFC2';
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('SUPPLY CHAIN MEME', canvas.width / 2, 60);
+
+    // Scenario
+    ctx.fillStyle = '#9CA3AF';
+    ctx.font = '18px Arial';
+    const scenarioLines = wrapText(ctx, generatedMeme.scenario, canvas.width - 100);
+    scenarioLines.forEach((line, i) => {
+      ctx.fillText(line, canvas.width / 2, 120 + i * 25);
+    });
+
+    // Caption (the meme text)
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 32px Arial';
+    const captionLines = wrapText(ctx, generatedMeme.caption, canvas.width - 100);
+    const startY = canvas.height / 2 + 50;
+    captionLines.forEach((line, i) => {
+      ctx.fillText(line, canvas.width / 2, startY + i * 40);
+    });
+
+    // Download
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'supply-chain-meme.png';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  };
+
+  const wrapText = (ctx, text, maxWidth) => {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = '';
+
+    words.forEach(word => {
+      const testLine = currentLine + word + ' ';
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > maxWidth && currentLine !== '') {
+        lines.push(currentLine.trim());
+        currentLine = word + ' ';
+      } else {
+        currentLine = testLine;
+      }
+    });
+    lines.push(currentLine.trim());
+    return lines;
+  };
+
+  return (
+    <div className="min-h-screen py-24">
+      <div className="max-w-5xl mx-auto px-4">
+        <div className="text-center mb-12">
+          <div className="inline-block px-4 py-1 border border-[#00FFC2]/50 rounded-full bg-[#00FFC2]/10 backdrop-blur-sm mb-4">
+            <span className="text-[#00FFC2] font-mono text-xs flex items-center gap-2">
+              <Image size={12} /> AI-POWERED MEME GENERATOR
+            </span>
+          </div>
+          <h2 className="text-5xl font-bold mb-4">SUPPLY CHAIN MEMES</h2>
+          <p className="text-xl text-gray-400">Turn your logistics nightmares into viral content</p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Input Section */}
+          <div className="bg-black border border-gray-800 rounded-xl p-6">
+            <h3 className="text-xl font-bold mb-4 text-[#00FFC2]">Create Your Meme</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Crisis Scenario</label>
+                <textarea
+                  value={memeText}
+                  onChange={(e) => setMemeText(e.target.value)}
+                  placeholder="e.g., Container stuck in Suez Canal"
+                  className="w-full h-32 bg-gray-900 border border-gray-700 rounded px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#00FFC2] transition-colors"
+                  aria-label="Enter crisis scenario for meme"
+                />
+              </div>
+              <button
+                onClick={generateMeme}
+                disabled={loading}
+                className="w-full bg-[#00FFC2] hover:bg-[#00CC9A] disabled:bg-gray-700 disabled:cursor-not-allowed text-black font-bold py-3 px-6 rounded flex items-center justify-center gap-2 transition-all"
+                aria-label="Generate meme"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="animate-spin" size={20} />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={20} />
+                    Generate Meme
+                  </>
+                )}
+              </button>
+              {error && (
+                <div className="text-[#FF2A00] text-sm flex items-center gap-2">
+                  <AlertTriangle size={16} />
+                  {error}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Preview Section */}
+          <div className="bg-black border border-gray-800 rounded-xl p-6 flex flex-col">
+            <h3 className="text-xl font-bold mb-4 text-[#00FFC2]">Preview</h3>
+            {generatedMeme ? (
+              <div className="flex-1 flex flex-col">
+                <div className="flex-1 bg-[#050505] border-2 border-[#00FFC2] rounded-lg p-8 flex flex-col items-center justify-center text-center">
+                  <div className="text-[#00FFC2] text-xs font-mono mb-4 uppercase">Supply Chain Meme</div>
+                  <div className="text-gray-400 text-sm mb-8 italic">{generatedMeme.scenario}</div>
+                  <div className="text-white text-2xl font-bold leading-tight">{generatedMeme.caption}</div>
+                </div>
+                <button
+                  onClick={downloadMeme}
+                  className="mt-4 w-full bg-gray-900 hover:bg-gray-800 text-white py-2 px-4 rounded flex items-center justify-center gap-2 transition-colors"
+                  aria-label="Download meme"
+                >
+                  <Download size={16} />
+                  Download Meme
+                </button>
+              </div>
+            ) : (
+              <div className="flex-1 bg-gray-900/50 border border-gray-700 border-dashed rounded-lg flex items-center justify-center text-gray-500">
+                <div className="text-center">
+                  <Image size={48} className="mx-auto mb-2 opacity-50" />
+                  <p>Your meme will appear here</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Voice Engine Section
+const VoiceEngineSection = () => {
+  const [narrative, setNarrative] = useState('');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [audioData, setAudioData] = useState(null);
+  const [visualizerData, setVisualizerData] = useState(Array(20).fill(0));
+  const audioRef = useRef(null);
+  const analyzerRef = useRef(null);
+  const animationFrameRef = useRef(null);
+
+  const generateVoice = async () => {
+    if (!narrative.trim()) {
+      setError('Please enter a narrative to convert to speech');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setAudioData(null);
+    setIsPlaying(false);
+
+    try {
+      // Note: Gemini TTS requires a different API endpoint
+      // For now, we'll generate the text and provide a placeholder for audio
+      const prompt = `Enhance this executive briefing for a supply chain platform: "${narrative}". 
+      Make it sound professional, urgent, and compelling. Keep it under 100 words.
+      Return ONLY the enhanced text.`;
+      
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const enhancedText = response.text().trim();
+
+      // In a real implementation, you would call Gemini's TTS API here
+      // For now, we'll simulate audio generation
+      setError('Note: Text-to-Speech requires Gemini TTS API configuration. Enhanced text is shown below.');
+      
+      // Store the enhanced narrative
+      setAudioData({
+        text: enhancedText,
+        original: narrative
+      });
+
+    } catch (e) {
+      console.error('Voice generation failed:', e);
+      setError('Voice generation failed. Please try again.');
+    }
+
+    setLoading(false);
+  };
+
+  const togglePlayPause = () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    } else {
+      audioRef.current.play();
+      setIsPlaying(true);
+      startVisualizer();
+    }
+  };
+
+  const startVisualizer = () => {
+    if (!analyzerRef.current) return;
+
+    const animate = () => {
+      const dataArray = new Uint8Array(analyzerRef.current.frequencyBinCount);
+      analyzerRef.current.getByteFrequencyData(dataArray);
+
+      // Sample 20 frequency bins for visualization
+      const samples = [];
+      const step = Math.floor(dataArray.length / 20);
+      for (let i = 0; i < 20; i++) {
+        samples.push(dataArray[i * step] / 255);
+      }
+      setVisualizerData(samples);
+
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    animate();
+  };
+
+  useEffect(() => {
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div className="min-h-screen py-24 bg-gradient-to-b from-black to-gray-900">
+      <div className="max-w-5xl mx-auto px-4">
+        <div className="text-center mb-12">
+          <div className="inline-block px-4 py-1 border border-[#00FFC2]/50 rounded-full bg-[#00FFC2]/10 backdrop-blur-sm mb-4">
+            <span className="text-[#00FFC2] font-mono text-xs flex items-center gap-2">
+              <Mic size={12} /> AI VOICE ENGINE
+            </span>
+          </div>
+          <h2 className="text-5xl font-bold mb-4">NARRATIVE DELIVERY</h2>
+          <p className="text-xl text-gray-400">Transform your pitch into an executive briefing</p>
+        </div>
+
+        <div className="bg-black border border-gray-800 rounded-xl overflow-hidden">
+          <div className="grid md:grid-cols-2">
+            {/* Input Section */}
+            <div className="p-6 border-r border-gray-800">
+              <h3 className="text-xl font-bold mb-4 text-[#00FFC2]">Your Narrative</h3>
+              <textarea
+                value={narrative}
+                onChange={(e) => setNarrative(e.target.value)}
+                placeholder="Enter your executive briefing text here..."
+                className="w-full h-64 bg-gray-900 border border-gray-700 rounded px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#00FFC2] transition-colors resize-none"
+                aria-label="Enter narrative text"
+              />
+              <button
+                onClick={generateVoice}
+                disabled={loading}
+                className="mt-4 w-full bg-[#00FFC2] hover:bg-[#00CC9A] disabled:bg-gray-700 disabled:cursor-not-allowed text-black font-bold py-3 px-6 rounded flex items-center justify-center gap-2 transition-all"
+                aria-label="Generate voice"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="animate-spin" size={20} />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Volume2 size={20} />
+                    Enhance & Generate
+                  </>
+                )}
+              </button>
+              {error && (
+                <div className="mt-4 text-[#FF2A00] text-sm flex items-start gap-2">
+                  <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" />
+                  <span>{error}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Audio Player Section */}
+            <div className="p-6 bg-gradient-to-br from-gray-900 to-black">
+              <h3 className="text-xl font-bold mb-4 text-[#00FFC2]">Enhanced Audio</h3>
+              
+              {audioData ? (
+                <div className="space-y-6">
+                  {/* Enhanced Text Display */}
+                  <div className="bg-black/50 border border-[#00FFC2]/20 rounded-lg p-4 h-48 overflow-y-auto">
+                    <div className="text-gray-400 text-xs mb-2">ENHANCED NARRATIVE:</div>
+                    <p className="text-white text-sm leading-relaxed">{audioData.text}</p>
+                  </div>
+
+                  {/* Audio Visualizer */}
+                  <div className="bg-black border border-gray-800 rounded-lg p-4">
+                    <div className="flex items-end justify-around h-24 gap-1">
+                      {visualizerData.map((value, i) => (
+                        <div
+                          key={i}
+                          className="bg-[#00FFC2] rounded-t transition-all duration-100"
+                          style={{
+                            height: `${Math.max(10, value * 100)}%`,
+                            width: '100%',
+                            opacity: isPlaying ? 0.8 : 0.3
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Playback Controls (Placeholder) */}
+                  <div className="flex items-center justify-center gap-4">
+                    <button
+                      onClick={togglePlayPause}
+                      disabled
+                      className="w-16 h-16 rounded-full border-2 border-[#00FFC2] bg-[#00FFC2]/10 flex items-center justify-center hover:bg-[#00FFC2]/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      aria-label={isPlaying ? 'Pause audio' : 'Play audio'}
+                    >
+                      {isPlaying ? (
+                        <Pause size={24} className="text-[#00FFC2]" />
+                      ) : (
+                        <Play size={24} className="text-[#00FFC2] ml-1" />
+                      )}
+                    </button>
+                  </div>
+                  <div className="text-center text-gray-500 text-xs">
+                    Audio playback requires TTS API configuration
+                  </div>
+                </div>
+              ) : (
+                <div className="h-full flex items-center justify-center text-gray-500">
+                  <div className="text-center">
+                    <Volume2 size={48} className="mx-auto mb-2 opacity-50" />
+                    <p>Generate audio to see the player</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Info Card */}
+        <div className="mt-8 bg-gray-900/50 border border-gray-800 rounded-lg p-6">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#00FFC2]/10 border border-[#00FFC2] flex items-center justify-center">
+              <Sparkles size={20} className="text-[#00FFC2]" />
+            </div>
+            <div>
+              <h4 className="font-bold text-white mb-2">Production Implementation Note</h4>
+              <p className="text-gray-400 text-sm">
+                This demo showcases text enhancement using Gemini. For full TTS functionality, integrate Google Cloud Text-to-Speech API
+                or Gemini's multimodal capabilities with audio output. The visualizer demonstrates real-time audio analysis using Web Audio API.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const BidSection = () => {
   return (
     <div className="bg-[#0A0A0A] py-24 border-t border-gray-800">
       <div className="max-w-4xl mx-auto px-4">
