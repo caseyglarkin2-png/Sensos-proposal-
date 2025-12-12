@@ -45,7 +45,7 @@ This is a **React-based single-page application** showcasing Sensos, an AI-power
 1. Install dependencies: `npm install`
 2. Copy environment template: `cp .env.example .env`
 3. Add your Gemini API key to `.env`: `VITE_GEMINI_API_KEY=your_key_here`
-4. Start dev server: `npm run dev` (opens on http://localhost:3000)
+4. Start dev server: `npm run dev` (runs on http://localhost:3000)
 5. Preview production build: `npm run preview`
 
 ## Build and Test Commands
@@ -176,7 +176,7 @@ All jobs run on `push` and `pull_request` events for `main` and `develop` branch
 ## Common Pitfalls
 
 - **Missing API Key**: Ensure `VITE_GEMINI_API_KEY` is set in `.env` for AI features to work
-- **Port Conflicts**: Dev server runs on port 3000 by default; change in `vite.config.js` if needed
+- **Port Conflicts**: Dev server is configured to run on port 3000 in `vite.config.js`; change if needed
 - **Build Errors**: Clear `node_modules` and `dist` directories, then reinstall with `npm install`
 - **Tailwind Not Working**: Ensure `index.css` imports Tailwind directives and PostCSS is configured
 - **Environment Variables**: Remember the `VITE_` prefix for all frontend environment variables
@@ -225,5 +225,5 @@ When making changes, ensure:
 
 ## Contact
 
-**Project Owner**: Casey Larkin - The Freight Marketer
+**Project Owner**: Casey Larkin
 **License**: MIT License (see LICENSE file)
