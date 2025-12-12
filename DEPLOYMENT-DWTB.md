@@ -337,4 +337,4 @@ cat .env
 
 **Ready to deploy?** Choose Option 1 (Vercel) for the fastest deployment to dwtb.dev.
 
-Last updated: December 2024
+Last updated: December 2025
