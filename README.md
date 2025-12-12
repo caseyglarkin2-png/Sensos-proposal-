@@ -113,7 +113,9 @@ Sensos-proposal-/
 
 ## 🌐 Deployment
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for comprehensive deployment instructions including:
+**Quick Start for dwtb.dev**: See [DEPLOYMENT-DWTB.md](./DEPLOYMENT-DWTB.md) for step-by-step instructions to deploy to the dwtb.dev domain.
+
+For comprehensive deployment options, see [DEPLOYMENT.md](./DEPLOYMENT.md) including:
 - Vercel deployment (recommended)
 - Netlify deployment
 - Docker deployment
