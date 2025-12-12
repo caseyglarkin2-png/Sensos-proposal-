@@ -89,7 +89,7 @@ npm install
 ### Development Server
 ```bash
 npm run dev
-# Runs on http://localhost:3000
+# Configured to run on http://localhost:3000 (not default Vite port 5173)
 ```
 
 ### Build
@@ -101,7 +101,7 @@ npm run build
 ### Linting
 ```bash
 npm run lint
-# Must pass with max 0 warnings before PR approval
+# Must pass with zero warnings (--max-warnings 0) before PR approval
 ```
 
 ### Preview Production Build
@@ -124,8 +124,8 @@ npm run preview
 
 Located in `.github/workflows/deploy.yml`:
 
-1. **Lint Job**: Runs ESLint (continues on error but review required)
-2. **Build Job**: Compiles production build
+1. **Lint Job**: Runs ESLint (continues on error - failures don't block pipeline)
+2. **Build Job**: Compiles production build (must succeed)
 3. **Deploy Job**: Deploys to Vercel (main branch only)
 4. **Docker Job**: Builds Docker image (optional, main branch only)
 
